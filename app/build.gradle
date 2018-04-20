@@ -1,0 +1,60 @@
+apply plugin: 'com.android.application'
+apply from: 'tinkerpatch.gradle'
+android {
+    compileSdkVersion 27
+    defaultConfig {
+        applicationId "com.zhouwenguang.hz.myapplication"
+        minSdkVersion 15
+        targetSdkVersion 27
+        versionCode 1
+        versionName "1.0.1"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    signingConfigs {
+        release {//发布版本的签名配置
+            storeFile file('key.jks')
+            keyAlias 'test'
+            storePassword '123456789'
+            keyPassword '123456789'
+        }
+        debug {//调试版本的签名配置
+            storeFile file('key.jks')
+            keyAlias 'test'
+            storePassword '123456789'
+            keyPassword '123456789'
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'),
+                    'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+        debug {
+            signingConfig signingConfigs.debug
+        }
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.1'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+
+    //若使用annotation需要单独引用,对于tinker的其他库都无需再引用
+    annotationProcessor("com.tinkerpatch.tinker:tinker-android-anno:${TINKER_VERSION}") {
+        changing = true
+    }
+    compileOnly("com.tinkerpatch.tinker:tinker-android-anno:${TINKER_VERSION}") {
+        changing = true
+    }
+    implementation("com.tinkerpatch.sdk:tinkerpatch-android-sdk:${TINKERPATCH_VERSION}") {
+        changing = true
+    }
+
+}
